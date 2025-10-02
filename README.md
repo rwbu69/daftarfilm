@@ -57,24 +57,26 @@ Sistem manajemen koleksi film modern dengan fitur autentikasi dan antarmuka yang
 ```mermaid
 erDiagram
     users {
+   erDiagram
+    users {
         bigint id PK
-        varchar name "255"
-        varchar email "255" UK
+        varchar name
+        varchar email
         timestamp email_verified_at
-        varchar password "255"
-        varchar remember_token "100"
+        varchar password
+        varchar remember_token
         timestamp created_at
         timestamp updated_at
     }
     
     films {
         bigint id PK
-        varchar title "255"
-        varchar genre "100"
-        integer year
-        decimal rating "3,1"
+        varchar title
+        varchar genre
+        int year
+        decimal rating
         boolean watched
-        varchar image "255"
+        varchar image
         bigint user_id FK
         timestamp created_at
         timestamp updated_at
