@@ -45,7 +45,7 @@ Sistem manajemen koleksi film modern dengan fitur autentikasi dan antarmuka yang
 |----------|------------|
 | **Backend** | Laravel 12 (PHP 8.2+) |
 | **Frontend** | Blade Templates, Custom CSS |
-| **Database** | SQLite |
+| **Database** | MySQL 8.0+ |
 | **Autentikasi** | Laravel Auth (Custom Implementation) |
 | **File Storage** | Laravel Storage |
 | **Asset Building** | Vite |
@@ -225,7 +225,7 @@ flowchart TD
 - PHP 8.2 atau lebih tinggi
 - Composer
 - Node.js & NPM
-- SQLite3
+- MySQL 8.0 atau lebih tinggi
 
 ### Langkah-langkah Instalasi
 
@@ -264,8 +264,12 @@ APP_DEBUG=true
 APP_TIMEZONE=UTC
 APP_URL=http://localhost:8000
 
-DB_CONNECTION=sqlite
-DB_DATABASE=database/database.sqlite
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=daftarfilm
+DB_USERNAME=root
+DB_PASSWORD=your_password
 ```
 
 6. **Buat Storage Link**
@@ -282,13 +286,21 @@ npm run dev
 
 ## 🗄 Setup Database
 
-### 1. Buat Database SQLite
+### 1. Buat Database MySQL
 ```bash
-# Buat direktori database jika belum ada
-mkdir -p database
+# Login ke MySQL sebagai root
+mysql -u root -p
 
-# Buat file database SQLite
-touch database/database.sqlite
+# Buat database baru
+CREATE DATABASE daftarfilm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+# Buat user khusus untuk aplikasi (opsional)
+CREATE USER 'filmuser'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON daftarfilm.* TO 'filmuser'@'localhost';
+FLUSH PRIVILEGES;
+
+# Keluar dari MySQL
+exit;
 ```
 
 ### 2. Jalankan Database Migrations
@@ -305,30 +317,30 @@ php artisan migrate --seed
 #### Tabel Users
 ```sql
 CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     email_verified_at TIMESTAMP NULL,
     password VARCHAR(255) NOT NULL,
     remember_token VARCHAR(100) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 ```
 
 #### Tabel Films
 ```sql
 CREATE TABLE films (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     genre VARCHAR(100) NOT NULL,
-    year INTEGER NOT NULL,
+    year INT NOT NULL,
     rating DECIMAL(3,1) NOT NULL,
     watched BOOLEAN DEFAULT FALSE,
     image VARCHAR(255) NULL,
-    user_id INTEGER NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 ```
@@ -525,7 +537,11 @@ composer install
 npm install
 cp .env.example .env
 php artisan key:generate
-touch database/database.sqlite
+
+# Setup MySQL database
+mysql -u root -p -e "CREATE DATABASE daftarfilm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+# Edit .env file untuk konfigurasi database MySQL
+
 php artisan migrate
 php artisan storage:link
 npm run build
