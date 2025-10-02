@@ -57,8 +57,6 @@ Sistem manajemen koleksi film modern dengan fitur autentikasi dan antarmuka yang
 ```mermaid
 erDiagram
     users {
-   erDiagram
-    users {
         bigint id PK
         varchar name
         varchar email
