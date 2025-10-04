@@ -662,6 +662,8 @@ body {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .btn:hover::before {
@@ -869,7 +871,8 @@ body {
         rgba(238, 238, 238, 0.02) 100%);
     opacity: 0;
     transition: opacity 0.4s ease;
-    z-index: 1;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .film-card:hover {
@@ -917,7 +920,7 @@ body {
 .film-content {
     position: relative;
     padding: 1.25rem;
-    z-index: 3;
+    z-index: 5;
     display: flex;
     flex-direction: column;
     gap: 0.875rem;
@@ -1010,11 +1013,39 @@ body {
     flex-wrap: wrap;
     align-items: center;
     margin-top: 0.5rem;
-    margin: 20px;
+    position: relative;
+    z-index: 10;
+    margin-left:10px;
+    margin-bottom: 12px;
+}
+
+/* Debug styles for button visibility */
+.film-actions .btn {
+    position: relative;
+    z-index: 15;
+    pointer-events: auto;
+    cursor: pointer !important;
+    background-color: rgba(70, 138, 154, 0.9) !important;
+    border: 2px solid rgba(70, 138, 154, 1) !important;
+    user-select: none;
+}
+
+.film-actions .btn:hover {
+    transform: scale(1.05);
+    background-color: rgba(70, 138, 154, 1) !important;
 }
 
 .inline-form {
     display: inline;
+    position: relative;
+    z-index: 15;
+}
+
+.inline-form .btn {
+    position: relative;
+    z-index: 15;
+    pointer-events: auto;
+    cursor: pointer !important;
 }
 
 /* Form Container */

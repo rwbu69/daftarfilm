@@ -81,22 +81,22 @@
             </div>
             
             <div class="film-actions">
-                <a href="{{ route('films.show', $film) }}" class="btn btn-sm btn-info">Detail</a>
-                <a href="{{ route('films.edit', $film) }}" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="{{ route('films.show', $film) }}" class="btn btn-sm btn-info" onclick="console.log('Detail clicked')">Detail</a>
+                <a href="{{ route('films.edit', $film) }}" class="btn btn-sm btn-secondary" onclick="console.log('Edit clicked')">Edit</a>
                 
-                <form action="{{ route('films.toggle-watched', $film) }}" method="POST" class="inline-form">
+                <form action="{{ route('films.toggle-watched', $film) }}" method="POST" class="inline-form" onsubmit="console.log('Toggle form submitted')">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="btn btn-sm btn-outline">
+                    <button type="submit" class="btn btn-sm btn-outline" onclick="console.log('Toggle button clicked')">
                         {{ $film->watched ? 'Tandai Belum' : 'Tandai Sudah' }}
                     </button>
                 </form>
                 
                 <form action="{{ route('films.destroy', $film) }}" method="POST" class="inline-form" 
-                      onsubmit="return confirm('Yakin ingin menghapus film ini?')">
+                      onsubmit="console.log('Delete form submitted'); return confirm('Yakin ingin menghapus film ini?')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="console.log('Delete button clicked')">Hapus</button>
                 </form>
             </div>
         </div>

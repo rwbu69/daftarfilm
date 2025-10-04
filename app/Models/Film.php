@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Film extends Model
 {
@@ -12,7 +13,8 @@ class Film extends Model
         'year',
         'rating',
         'watched',
-        'image'
+        'image',
+        'user_id'
     ];
 
     protected $casts = [
@@ -20,4 +22,12 @@ class Film extends Model
         'rating' => 'decimal:1',
         'year' => 'integer'
     ];
+
+    /**
+     * Get the user that owns the film.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

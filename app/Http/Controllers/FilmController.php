@@ -12,7 +12,7 @@ class FilmController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Film::query();
+        $query = Film::where('user_id', auth()->id());
 
         // Filter berdasarkan genre
         if ($request->filled('genre')) {
@@ -30,7 +30,7 @@ class FilmController extends Controller
         }
 
         $films = $query->orderBy('created_at', 'desc')->paginate(12);
-        $genres = Film::distinct()->pluck('genre')->filter();
+        $genres = Film::where('user_id', auth()->id())->distinct()->pluck('genre')->filter();
         
         return view('films.index', compact('films', 'genres'));
     }
@@ -68,7 +68,8 @@ class FilmController extends Controller
             'year' => $request->year,
             'rating' => $request->rating,
             'watched' => $request->has('watched'),
-            'image' => $imagePath
+            'image' => $imagePath,
+            'user_id' => auth()->id()
         ]);
 
         return redirect()->route('films.index')->with('success', 'Film berhasil ditambahkan!');
@@ -79,6 +80,11 @@ class FilmController extends Controller
      */
     public function show(Film $film)
     {
+        // Check if the film belongs to the authenticated user
+        if ($film->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         return view('films.show', compact('film'));
     }
 
@@ -87,6 +93,11 @@ class FilmController extends Controller
      */
     public function edit(Film $film)
     {
+        // Check if the film belongs to the authenticated user
+        if ($film->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         return view('films.edit', compact('film'));
     }
 
@@ -95,6 +106,11 @@ class FilmController extends Controller
      */
     public function update(Request $request, Film $film)
     {
+        // Check if the film belongs to the authenticated user
+        if ($film->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $request->validate([
             'title' => 'required|string|max:255',
             'genre' => 'required|string|max:255',
@@ -131,6 +147,11 @@ class FilmController extends Controller
      */
     public function destroy(Film $film)
     {
+        // Check if the film belongs to the authenticated user
+        if ($film->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         // Delete image if exists
         if ($film->image && \Storage::disk('public')->exists($film->image)) {
             \Storage::disk('public')->delete($film->image);
@@ -145,6 +166,11 @@ class FilmController extends Controller
      */
     public function toggleWatched(Film $film)
     {
+        // Check if the film belongs to the authenticated user
+        if ($film->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $film->update(['watched' => !$film->watched]);
         return redirect()->back()->with('success', 'Status film berhasil diperbarui!');
     }
