@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('year');
             $table->decimal('rating', 3, 1); // Rating dengan 1 digit di belakang koma (0.0 - 10.0)
             $table->boolean('watched')->default(false);
+            $table->string('image')->nullable(); // Column untuk menyimpan path gambar
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key ke users table
             $table->timestamps();
         });
     }
